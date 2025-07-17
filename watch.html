@@ -2,7 +2,47 @@
 <html lang="en">
 <head>
     <title>Stopwatch</title>
-    <link rel="stylesheet" href="watch.css">
+    <style>
+	    body {
+	font-family: Arial, sans-serif;
+	background-color: whitesmoke;
+}
+
+.stopwatch {
+	width: 300px;
+	margin: 50px auto;
+	background-color: moccasin;
+	padding: 20px;
+	border: 1px solid blue;
+	border-radius: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#display {
+	font-size: 50px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+button {
+	background-color: greenyellow;
+	color: black;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: lightsalmon;
+}
+
+button:disabled {
+	background-color: greenyellow;
+	color:black;
+	cursor: not-allowed;
+}
+    </style>
 </head>
 <body>
     <h1>Stopwatch</h1>
@@ -12,7 +52,54 @@
 		<button id="stop-button">Stop</button>
 		<button id="reset-button">Reset</button>
 	</div>
-    <script src="watch.js"></script>
+    <script> 
+	    let startTime = 0;
+let elapsedTime = 0;
+let timerInterval = null;
+
+document.getElementById('start-button').addEventListener('click', startTimer);
+document.getElementById('stop-button').addEventListener('click', stopTimer);
+document.getElementById('reset-button').addEventListener('click', resetTimer);
+
+function startTimer() {
+	startTime = Date.now() - elapsedTime;
+	timerInterval = setInterval(updateTimer, 1000);
+	document.getElementById('start-button').disabled = true;
+	document.getElementById('stop-button').disabled = false;
+}
+
+function stopTimer() {
+	elapsedTime = Date.now() - startTime;
+	clearInterval(timerInterval);
+	document.getElementById('start-button').disabled = false;
+	document.getElementById('stop-button').disabled = true;
+}
+
+function resetTimer() {
+	elapsedTime = 0;
+	startTime = 0;
+	clearInterval(timerInterval);
+	document.getElementById('display').innerHTML = '00:00:00';
+	document.getElementById('start-button').disabled = false;
+	document.getElementById('stop-button').disabled = true;
+}
+
+function updateTimer() {
+	elapsedTime = Date.now() - startTime;
+	let seconds = Math.floor(elapsedTime / 1000);
+	let minutes = Math.floor(seconds / 60);
+	let hours = Math.floor(minutes / 60);
+	seconds %= 60;
+	minutes %= 60;
+	hours %= 24;
+	document.getElementById('display').innerHTML = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+}
+
+function padZero(number) {
+	return (number < 10 ? '0' : '') + number;
+}
+
+    </script>
 
 </body>
 </html>
